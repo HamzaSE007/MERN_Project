@@ -1,4 +1,3 @@
-import { upload } from '../middlewares/multer.middleware.js'
 import { User } from '../models/user.model.js'
 import { ApiError } from '../utils/ApiError.js'
 import { ApiResponse } from '../utils/ApiResponse.js'
@@ -31,18 +30,24 @@ const userRegister = asyncHandler( async (req,res) => {
         throw new ApiError(409, "User already exists with email or username")
     }
 
+    console.log(req.files);
+    
+
     // check images and avatar
     const avatarLocalPath = req.files?.avatar[0]?.path;
     const coverImageLocalPath = req.files?.coverImage[0]?.path; 
 
     if(!avatarLocalPath){
-        throw new ApiError(400, "Avatar file is reqired")
+        throw new ApiError(400, "Avatar file path is reqired")
     }
 
     // Upload images and avatar on cloudinary
 
     const avatar = await uploadOnCloudinary(avatarLocalPath)
     const coverImage = await uploadOnCloudinary(coverImageLocalPath)
+
+    console.log(avatar.url);
+    
 
     if(!avatar){
         throw new ApiError(400, "Avatar file is required")
